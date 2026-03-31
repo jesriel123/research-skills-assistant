@@ -15,7 +15,7 @@ An interactive web application designed to help students and researchers develop
 
 This project is hosted on Vercel and deployed automatically with each push to the main branch.
 
-**Live Demo:** [Visit the app](https://interactive-research-skills-assistant-n41r9tyoc.vercel.app)
+**Live Demo:** [Visit the app](https://research-made-easy-guide.vercel.app)
 
 ## Local Development
 
