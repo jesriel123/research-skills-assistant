@@ -1,0 +1,12 @@
+{
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "public": true,
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/index.html"
+    }
+  ]
+}

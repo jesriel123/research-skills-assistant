@@ -1,0 +1,346 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Skills Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons for Professional UI -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Prevent external extension errors from showing in the UI/Console -->
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            // Silences mgt.clearMarks and common browser extension/external library errors
+            if (message.includes('mgt.clearMarks') || 
+                message.includes('mgt is not defined') || 
+                message.includes('ResizeObserver loop limit exceeded') ||
+                message.includes('Extension context invalidated')) {
+                return true;
+            }
+        };
+    </script>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <svg class="logo-icon" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Outer circle background -->
+                    <circle cx="60" cy="60" r="55" fill="#003d7a"/>
+                    <!-- Inner white circle -->
+                    <circle cx="60" cy="60" r="45" fill="#ffffff"/>
+                    <!-- Book spine left -->
+                    <rect x="38" y="35" width="8" height="50" fill="#003d7a"/>
+                    <!-- Book spine right -->
+                    <rect x="74" y="35" width="8" height="50" fill="#003d7a"/>
+                    <!-- Book page left -->
+                    <path d="M 38 35 Q 38 30 43 30 L 58 30 L 58 85 Q 58 90 53 90 L 38 90 Z" fill="#e8f0ff" stroke="#003d7a" stroke-width="1.5"/>
+                    <!-- Book page right -->
+                    <path d="M 62 30 L 77 30 Q 82 30 82 35 L 82 90 Q 82 90 77 90 L 62 85 Z" fill="#e8f0ff" stroke="#003d7a" stroke-width="1.5"/>
+                    <!-- Left star (larger) -->
+                    <g transform="translate(52, 28)">
+                        <polygon points="0,-8 2.4,-2.4 8,-0.8 3.2,3.2 4.8,9.6 0,6.4 -4.8,9.6 -3.2,3.2 -8,-0.8 -2.4,-2.4" fill="#003d7a"/>
+                    </g>
+                    <!-- Right sparkle (smaller) -->
+                    <g transform="translate(70, 25)">
+                        <polygon points="0,-5 1.5,-1.5 5,-0.5 2,2 3,6 0,4 -3,6 -2,2 -5,-0.5 -1.5,-1.5" fill="#003d7a"/>
+                    </g>
+                </svg>
+                <div class="brand-text">
+                    <strong>Research Assistant</strong>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <div class="menu-label">TOOLS</div>
+                <button class="nav-btn active" data-section="title">
+                    <span class="icon"><i data-lucide="pin" style="color: #ff4d4f;"></i></span>
+                    <div class="nav-text">
+                        <span class="nav-title">Research Title</span>
+                        <span class="nav-sub">Generate titles</span>
+                    </div>
+                </button>
+                <button class="nav-btn" data-section="significance">
+                    <span class="icon"><i data-lucide="sprout" style="color: #52c41a;"></i></span>
+                    <div class="nav-text">
+                        <span class="nav-title">Significance</span>
+                        <span class="nav-sub">Why it matters</span>
+                    </div>
+                </button>
+                <button class="nav-btn" data-section="problem">
+                    <span class="icon"><i data-lucide="search" style="color: #1890ff;"></i></span>
+                    <div class="nav-text">
+                        <span class="nav-title">Problem Statement</span>
+                        <span class="nav-sub">Define the problem</span>
+                    </div>
+                </button>
+                <button class="nav-btn" data-section="rrl">
+                    <span class="icon"><i data-lucide="book-open" style="color: #722ed1;"></i></span>
+                    <div class="nav-text">
+                        <span class="nav-title">RRL & RRS</span>
+                        <span class="nav-sub">Literature guide</span>
+                    </div>
+                </button>
+                <button class="nav-btn" data-section="citation">
+                    <span class="icon"><i data-lucide="folder" style="color: #faad14;"></i></span>
+                    <div class="nav-text">
+                        <span class="nav-title">Citation</span>
+                        <span class="nav-sub">APA, MLA, Chicago, IEEE</span>
+                    </div>
+                </button>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="menu-label">Language</div>
+                <div class="lang-toggle">
+                    <button class="lang-btn active">English</button>
+                    <button class="lang-btn">Filipino</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1>Interactive Research Skills</h1>
+                <p>Step-by-step guidance for writing titles, significance, problem statements, literature reviews, and APA citations.</p>
+            </header>
+
+            <div class="sections-container">
+                <!-- Section 1: Research Title -->
+                <section id="title" class="section active">
+                    <div class="card-container">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <span class="card-icon" style="background: #fff1f0; color: #cf1322;"><i data-lucide="pin"></i></span>
+                                <div>
+                                    <h2>Research Title Generator</h2>
+                                    <span class="card-sub">Let's create compelling research titles based on your study details.</span>
+                                </div>
+                            </div>
+                            <button class="btn-example" onclick="autoFillTitle()">Use sample</button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="topic">Study Topic:</label>
+                            <input type="text" id="topic" placeholder="e.g., Effects of social media on academic performance">
+                        </div>
+                        <div class="form-group">
+                            <label for="targetGroup">Target Group:</label>
+                            <input type="text" id="targetGroup" placeholder="e.g., High school students">
+                        </div>
+                        <div class="form-group">
+                            <label for="variables">Variables (Optional):</label>        
+                            <input type="text" id="variables" placeholder="e.g., Study habits, screen time, grades">
+                        </div>
+                        <button class="btn-primary" onclick="generateTitles()">Generate →</button>
+                        <div id="titleResults" class="results"></div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Statement of the Problem -->
+                <section id="problem" class="section">
+                    <div class="card-container">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <span class="card-icon" style="background: #e6f7ff; color: #096dd9;"><i data-lucide="search"></i></span>
+                                <div>
+                                    <h2>Statement of the Problem</h2>
+                                    <span class="card-sub">Generate research questions and learn how to create a Statement of the Problem.</span>
+                                </div>
+                            </div>
+                            <button class="btn-example" onclick="autoFillProblem()">Use sample</button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="problemTopic">Research Topic:</label>
+                            <input type="text" id="problemTopic" placeholder="e.g., Impact of online learning on student engagement">
+                        </div>
+                        <button class="btn-primary" onclick="generateProblems()">Generate →</button>
+                        <div id="problemResults" class="results"></div>
+                    </div>
+                </section>
+
+                <!-- Section 3: Significance of the Study -->
+                <section id="significance" class="section">
+                    <div class="card-container">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <span class="card-icon" style="background: #f6ffed; color: #389e0d;"><i data-lucide="sprout"></i></span>
+                                <div>
+                                    <h2>Significance of the Study</h2>
+                                    <span class="card-sub">Explain why your research matters and who will benefit from it.</span>
+                                </div>
+                            </div>
+                            <button class="btn-example" onclick="autoFillSignificance()">Use sample</button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sigTopic">Study Topic:</label>
+                            <input type="text" id="sigTopic" placeholder="e.g., Mobile learning applications">
+                        </div>
+                        <div class="form-group">
+                            <label>Suggested Beneficiaries:</label>
+                            <div class="beneficiary-chips">
+                                <button class="chip" onclick="addBeneficiary('Students')">Students</button>
+                                <button class="chip" onclick="addBeneficiary('Teachers')">Teachers</button>
+                                <button class="chip" onclick="addBeneficiary('Parents')">Parents</button>
+                                <button class="chip" onclick="addBeneficiary('School Administrators')">School Administrators</button>
+                                <button class="chip" onclick="addBeneficiary('Researchers')">Researchers</button>
+                                <button class="chip" onclick="addBeneficiary('Community')">Community</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="beneficiaries">Selected Beneficiaries:</label>
+                            <input type="text" id="beneficiaries" placeholder="Click chips above or type manually (comma-separated)">
+                        </div>
+                        <button class="btn-primary" onclick="generateSignificance()">Generate →</button>
+                        <div id="significanceResults" class="results"></div>
+                    </div>
+                </section>
+
+                <!-- Section 4: RRL and RRS Guide -->
+                <section id="rrl" class="section">
+                    <div class="card-container">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <span class="card-icon" style="background: #f9f0ff; color: #531dab;"><i data-lucide="book-open"></i></span>
+                                <div>
+                                    <h2>Review of Related Literature & Studies</h2>
+                                    <span class="card-sub">Search Reliable Research Websites.</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rrlTopic">Enter Your Study Topic:</label>       
+                            <input type="text" id="rrlTopic" placeholder="e.g., Effects of gamification on student motivation">
+                        </div>
+                        
+                        <div class="search-buttons" style="margin-bottom: 24px;">
+                            <button class="search-btn" onclick="searchWebsite('scholar')">
+                                <span class="search-icon"><i data-lucide="search" style="color: #1890ff;"></i></span>
+                                <div>
+                                    <strong>Google Scholar</strong>
+                                    <small>Free academic search engine</small>
+                                </div>
+                            </button>
+                            <button class="search-btn" onclick="searchWebsite('eric')">
+                                <span class="search-icon"><i data-lucide="book" style="color: #722ed1;"></i></span>
+                                <div>
+                                    <strong>ERIC</strong>
+                                    <small>Education research database</small>
+                                </div>
+                            </button>
+                            <button class="search-btn" onclick="searchWebsite('pubmed')">
+                                <span class="search-icon"><i data-lucide="heart-pulse" style="color: #ff4d4f;"></i></span>
+                                <div>
+                                    <strong>PubMed</strong>
+                                    <small>Medical & health sciences</small>
+                                </div>
+                            </button>
+                            <button class="search-btn" onclick="searchWebsite('researchgate')">
+                                <span class="search-icon"><i data-lucide="microscope" style="color: #52c41a;"></i></span>
+                                <div>
+                                    <strong>ResearchGate</strong>
+                                    <small>Research papers</small>
+                                </div>
+                            </button>
+                            <button class="search-btn" onclick="searchWebsite('jstor')">
+                                <span class="search-icon"><i data-lucide="library" style="color: #fa8c16;"></i></span>
+                                <div>
+                                    <strong>JSTOR</strong>
+                                    <small>Academic journals & books</small>
+                                </div>
+                            </button>
+                            <button class="search-btn" onclick="searchWebsite('wikipedia')">
+                                <span class="search-icon"><i data-lucide="globe" style="color: #1890ff;"></i></span>
+                                <div>
+                                    <strong>Wikipedia</strong>
+                                    <small>Free online encyclopedia</small>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 5: Citation Guide -->
+                <section id="citation" class="section">
+                    <div class="card-container" id="citation-card">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <span class="card-icon" style="background:#fff3cd; color: #faad14;"><i data-lucide="folder"></i></span>
+                                <div>
+                                    <h2>Citation Generator</h2>
+                                    <span class="card-sub">Generate citations in APA, MLA, Chicago, or IEEE formats</span>
+                                </div>
+                            </div>
+                            <!-- There's no autofill logic mapping for citation in the js, but the button visually is there. I'll put a dummy alert so it doesn't crash or break logic. -->
+                            <button class="btn-example" onclick="document.getElementById('citationUrl').value = 'https://www.apa.org'; document.getElementById('citationStyle').value = 'apa'; document.getElementById('citationSourceType').value = 'website'; document.getElementById('citationAuthor').value=''; document.getElementById('citationTitle').value=''; document.getElementById('citationYear').value='';">Use sample</button>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="citationStyle">Citation style</label>
+                            <select id="citationStyle" class="styled-select">
+                                <option value="apa">APA 7th</option>
+                                <option value="mla">MLA 9th</option>
+                                <option value="chicago">Chicago</option>
+                                <option value="ieee">IEEE</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="citationSourceType">Source type</label>
+                            <select id="citationSourceType" class="styled-select">
+                                <option value="website">Website</option>
+                                <option value="journal">Journal Article</option>
+                                <option value="book">Book</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="citationUrl">Source details</label>
+                            <textarea id="citationUrl" rows="4" placeholder="Paste or type: title, author, year, URL, journal, volume, pages... (Note: system requires valid URL for now)"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="citationAuthor">Author (optional override)</label>
+                            <input id="citationAuthor" type="text" placeholder="Auto-filled when available; you can edit" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="citationTitle">Title (optional override)</label>
+                            <input id="citationTitle" type="text" placeholder="Auto-filled when available; you can edit" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="citationYear">Year (optional override)</label>
+                            <input id="citationYear" type="text" placeholder="Auto-filled when available; e.g., 2023" />
+                        </div>
+
+                        <button class="btn-primary" onclick="generateCitation()">Generate →</button>
+
+                        <div id="citationResult" class="results"></div>
+                        
+                        <!-- Keep citation formats hidden or refactored lightly to ensure data is not lost entirely -->
+                        <div style="display:none;">
+                             <div class="citation-format"></div>
+                             <div class="citation-generator"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
