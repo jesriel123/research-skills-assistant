@@ -517,6 +517,24 @@ async function fetchPageMetadata(url) {
     }
 }
 
+function setAutoFilledInputValue(input, nextValue) {
+    if (!input) {
+        return;
+    }
+
+    const currentValue = input.value.trim();
+    const previousAutoFilledValue = (input.dataset.autofillValue || '').trim();
+    const isSafeToReplace = !currentValue || currentValue === previousAutoFilledValue;
+
+    if (!isSafeToReplace) {
+        return;
+    }
+
+    const valueToApply = String(nextValue || '').trim();
+    input.value = valueToApply;
+    input.dataset.autofillValue = valueToApply;
+}
+
 async function generateCitation() {
     const url = document.getElementById('citationUrl').value.trim();
     const style = document.getElementById('citationStyle').value;
@@ -563,17 +581,13 @@ async function generateCitation() {
     const titleInput = document.getElementById('citationTitle');
     const yearInput = document.getElementById('citationYear');
 
-    if (metadata && authorInput && !authorInput.value.trim() && metadata.author) {
-        authorInput.value = metadata.author;
-    }
+    const nextAuthor = metadata && metadata.author ? metadata.author : '';
+    const nextTitle = metadata && metadata.title ? metadata.title : '';
+    const nextYear = metadata && metadata.rawDate ? parseYear(metadata.rawDate, year) : '';
 
-    if (metadata && titleInput && !titleInput.value.trim() && metadata.title) {
-        titleInput.value = metadata.title;
-    }
-
-    if (metadata && yearInput && !yearInput.value.trim() && metadata.rawDate) {
-        yearInput.value = parseYear(metadata.rawDate, year);
-    }
+    setAutoFilledInputValue(authorInput, nextAuthor);
+    setAutoFilledInputValue(titleInput, nextTitle);
+    setAutoFilledInputValue(yearInput, nextYear);
 
     const manualAuthor = authorInput ? authorInput.value.trim() : '';
     const manualTitle = titleInput ? titleInput.value.trim() : '';
