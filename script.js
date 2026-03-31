@@ -484,94 +484,37 @@ function mergeMetadata(primary, fallback) {
 }
 
 async function fetchPageMetadata(url) {
-    const doiFromUrl = extractDoiFromText(url);
-    const crossrefFromUrl = await fetchCrossrefByDoi(doiFromUrl);
-
-    const endpoints = [
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-        `https://r.jina.ai/http://${url.replace(/^https?:\/\//i, '')}`,
-        `https://r.jina.ai/http://r.jina.ai/http://${url.replace(/^https?:\/\//i, '')}`
-    ];
-
-    for (const endpoint of endpoints) {
-        try {
-            const response = await fetch(endpoint, {
-                headers: {
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-                }
-            });
-
-            if (!response.ok) {
-                continue;
-            }
-
-            const html = await response.text();
-            if (!html || html.length < 120) {
-                continue;
-            }
-
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-
-            const metaContent = (selector) => {
-                const node = doc.querySelector(selector);
-                return node ? node.getAttribute('content') : '';
-            };
-
-            const citationAuthors = Array.from(doc.querySelectorAll('meta[name="citation_author"]'))
-                .map(node => node.getAttribute('content'))
-                .filter(Boolean);
-
-            const author = citationAuthors[0]
-                || metaContent('meta[name="author"]')
-                || metaContent('meta[property="article:author"]')
-                || '';
-
-            const title = metaContent('meta[name="citation_title"]')
-                || metaContent('meta[property="og:title"]')
-                || metaContent('meta[name="twitter:title"]')
-                || (doc.title || '').trim();
-
-            const siteName = metaContent('meta[property="og:site_name"]') || '';
-            const journal = metaContent('meta[name="citation_journal_title"]') || '';
-            const publisher = metaContent('meta[name="citation_publisher"]') || '';
-            const volume = metaContent('meta[name="citation_volume"]') || '';
-            const issue = metaContent('meta[name="citation_issue"]') || '';
-            const firstPage = metaContent('meta[name="citation_firstpage"]') || '';
-            const lastPage = metaContent('meta[name="citation_lastpage"]') || '';
-
-            const pages = firstPage && lastPage ? `${firstPage}-${lastPage}` : (firstPage || '');
-
-            const rawDate = metaContent('meta[name="citation_publication_date"]')
-                || metaContent('meta[property="article:published_time"]')
-                || metaContent('meta[name="date"]')
-                || '';
-
-            const doi = metaContent('meta[name="citation_doi"]')
-                || metaContent('meta[name="dc.identifier"]')
-                || extractDoiFromText(html);
-
-            const crossrefFromPage = await fetchCrossrefByDoi(doi);
-
-            const pageMetadata = {
-                title: title || '',
-                author: author || '',
-                siteName: siteName || '',
-                journal: journal || '',
-                publisher: publisher || '',
-                volume: volume || '',
-                issue: issue || '',
-                pages: pages || '',
-                rawDate: rawDate || ''
-            };
-
-            return mergeMetadata(pageMetadata, crossrefFromPage || crossrefFromUrl);
-        } catch (error) {
-            // Try next provider if this one fails.
-        }
+    if (!fetchPageMetadata.cache) {
+        fetchPageMetadata.cache = new Map();
     }
 
-    return crossrefFromUrl;
+    const cached = fetchPageMetadata.cache.get(url);
+    if (cached && (Date.now() - cached.timestamp) < 5 * 60 * 1000) {
+        return cached.data;
+    }
+
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+
+        const response = await fetch(`/api/metadata?url=${encodeURIComponent(url)}`, {
+            signal: controller.signal
+        });
+        clearTimeout(timeout);
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const metadata = await response.json();
+        fetchPageMetadata.cache.set(url, {
+            data: metadata || null,
+            timestamp: Date.now()
+        });
+        return metadata || null;
+    } catch (error) {
+        return null;
+    }
 }
 
 async function generateCitation() {
